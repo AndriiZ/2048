@@ -5,7 +5,7 @@ using System.Text;
 
 namespace _2048
 {
-    public class Tile
+    public class TileColorizer
     {
         private readonly Dictionary<int, ConsoleColor> colors = new Dictionary<int, ConsoleColor>
         {
@@ -24,18 +24,18 @@ namespace _2048
             {8192, ConsoleColor.Yellow},
             {16384, ConsoleColor.DarkYellow}
         };
-
-        public int Value {  get;set; }
-
-        public ConsoleColor Color
+        
+        public ConsoleColor GetColorByValue(int value)
         {
-            get
-            {
-                ConsoleColor color = ConsoleColor.Black;
-                colors.TryGetValue(Value, out color);
-                return color;
-            }
+            ConsoleColor color = ConsoleColor.Black;
+            colors.TryGetValue(value, out color);
+            return color;
         }
+    }
+
+    public class Tile
+    {
+        public int Value {  get;set; }
         public SByte X { get; set; }
         public SByte Y { get; set; }
     }
@@ -194,9 +194,10 @@ namespace _2048
         static void Main(string[] args)
         {
             var board = new Board();
+            var colorizer = new TileColorizer();
             bool running = true;
             Console.BackgroundColor = ConsoleColor.White;
-            PrintBoard(board);
+            PrintBoard(board, colorizer);
 
             while (running)
             {
@@ -224,16 +225,16 @@ namespace _2048
                         break;
                 }
                 if (running)
-                    PrintBoard(board);
+                    PrintBoard(board, colorizer);
                 if (!board.NextStepAvailable())
-		{
+                {
                     Console.WriteLine("Game over!");
-		    running = false;
-		}
+                    running = false;
+                }
             }
         }
 
-        private static void PrintBoard(Board board)
+        private static void PrintBoard(Board board, TileColorizer colorizer)
         {
             Console.Clear();
             Console.WriteLine("Used {0,4} steps", board.StepsCount);
@@ -245,7 +246,7 @@ namespace _2048
             {
                 for (int j = 0; j < colLength; j++)
                 {
-                    Console.ForegroundColor = arr[i, j].Color;
+                    Console.ForegroundColor = colorizer.GetColorByValue(arr[i, j].Value);
                     Console.Write(string.Format("{0,4} ", arr[i, j].Value));
                 }
                 Console.Write(Environment.NewLine + Environment.NewLine);
@@ -255,4 +256,3 @@ namespace _2048
         }
     }
 }
-
