@@ -25,8 +25,8 @@ namespace _2048
             {16384, ConsoleColor.DarkYellow}
         };
 
+        public int Value {  get;set; }
 
-        public int Value { get; set; }
         public ConsoleColor Color
         {
             get
@@ -45,6 +45,9 @@ namespace _2048
         private readonly SByte m_size;
         private List<Tile> m_board;
         private Random m_random = new Random();
+        private Stack<List<Tile>> m_undoboards = new Stack<List<Tile>>();
+
+        public int StepsCount { get; private set; }
 
         public Board(SByte size = 4)
         {
@@ -59,6 +62,14 @@ namespace _2048
                 m_board.Add(new Tile { X = y, Y = (sbyte)(x - (sbyte)(y * m_size)) });
             }
             NextFill();
+        }
+
+        public List<Tile> DeepCopy()
+        {
+            var board = new List<Tile>(m_size * m_size);
+            foreach (var tile in m_board)
+                board.Add(new Tile() { X = tile.X, Y = tile.Y, Value = tile.Value });
+            return board;
         }
 
         bool HasEqualInVector(Func<Tile, int> predicate)
@@ -106,66 +117,76 @@ namespace _2048
             return output;
         }
 
-        private void MoveP(Func<Tile, int> predicate)
+        private void Move(Func<Tile, int> predicate, bool up)
         {
+            m_undoboards.Push(DeepCopy());
+            StepsCount = StepsCount + 1;
             for (int c = 0; c < m_size; c++)
             {
                 var col1 = new List<Tile>(m_board.Where(x => predicate(x) == c));
 
                 for (int i = 0; i < m_size - 1; i++)
-                    for (sbyte y1 = 0; y1 < m_size - 1; y1++)
-                    {
-                        if (col1[y1].Value == col1[y1 + 1].Value || col1[y1].Value == 0)
-                        {
-                            col1[y1].Value = col1[y1].Value + col1[y1 + 1].Value;
-                            col1[y1 + 1].Value = 0;
-                        }
-                    }
+                    if (up)
+                        MoveP(col1);
+                    else
+                        MoveN(col1);
+            }
+            NextFill();
+        }
+
+
+        private void MoveP(List<Tile> col1)
+        {
+            for (sbyte y1 = 0; y1 < m_size - 1; y1++)
+            {
+                if (col1[y1].Value == col1[y1 + 1].Value || col1[y1].Value == 0)
+                {
+                    col1[y1].Value = col1[y1].Value + col1[y1 + 1].Value;
+                    col1[y1 + 1].Value = 0;
+                }
             }
         }
 
-        private void MoveN(Func<Tile, int> predicate)
+        private void MoveN(List<Tile> col1)
         {
-            for (int c = 0; c < m_size; c++)
+            for (sbyte y1 = (sbyte)(m_size - 1); y1 > 0; y1--)
             {
-                var col1 = new List<Tile>(m_board.Where(x => predicate(x) == c));
-
-                for (int i = 0; i < m_size - 1; i++)
-                    for (sbyte y1 = (sbyte)(m_size - 1); y1 > 0; y1--)
-                    {
-                        if (col1[y1].Value == col1[y1 - 1].Value || col1[y1].Value == 0)
-                        {
-                            col1[y1].Value = col1[y1].Value + col1[y1 - 1].Value;
-                            col1[y1 - 1].Value = 0;
-                        }
-                    }
+                if (col1[y1].Value == col1[y1 - 1].Value || col1[y1].Value == 0)
+                {
+                    col1[y1].Value = col1[y1].Value + col1[y1 - 1].Value;
+                    col1[y1 - 1].Value = 0;
+                }
             }
         }
 
         public void MoveUp()
         {
-            MoveP(x => x.Y);
-            NextFill();
+            Move(x => x.Y, true);
         }
 
         public void MoveDown()
         {
-            MoveN(x => x.Y);
-            NextFill();
+            Move(x => x.Y, false);
         }
 
         public void MoveLeft()
         {
-            MoveP(x => x.X);
-            NextFill();
+            Move(x => x.X, true);
         }
 
         public void MoveRight()
         {
-            MoveN(x => x.X);
-            NextFill();
+            Move(x => x.X, false);
         }
 
+
+        public void Undo()
+        {
+            if (StepsCount < 1)
+                return;
+            m_board = new List<Tile>(m_undoboards.Pop().ToArray());
+            StepsCount = StepsCount -1;
+        }
     }
 
     class Program
@@ -197,6 +218,10 @@ namespace _2048
                     case ConsoleKey.Q:
                         running = false;
                         break;
+                    case ConsoleKey.Z:
+                        if ((key.Modifiers & ConsoleModifiers.Control) == ConsoleModifiers.Control)
+                            board.Undo();
+                        break;
                 }
                 if (running)
                     PrintBoard(board);
@@ -208,6 +233,7 @@ namespace _2048
         private static void PrintBoard(Board board)
         {
             Console.Clear();
+            Console.WriteLine("Used {0,4} steps", board.StepsCount);
             var arr = board.To2DArray();
             int rowLength = arr.GetLength(0);
             int colLength = arr.GetLength(1);
@@ -221,7 +247,8 @@ namespace _2048
                 }
                 Console.Write(Environment.NewLine + Environment.NewLine);
             }
-            Console.WriteLine("Press q to exit, use arrou keys for game");
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine("Press q to exit, use arrow keys for game");
         }
     }
 }
