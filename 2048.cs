@@ -252,7 +252,7 @@ namespace _2048
                 Console.Write(Environment.NewLine + Environment.NewLine);
             }
             Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine("Press q to exit, use arrow keys for game");
+            Console.WriteLine("Press q to exit, use arrow keys for game, ctrl+z to undo");
         }
     }
 }
