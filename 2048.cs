@@ -226,7 +226,10 @@ namespace _2048
                 if (running)
                     PrintBoard(board);
                 if (!board.NextStepAvailable())
+		{
                     Console.WriteLine("Game over!");
+		    running = false;
+		}
             }
         }
 
