@@ -38,7 +38,7 @@ namespace _2048
                     engine = new AINaiveEngine();
             }
             Console.Clear();
-            var board = new Board();
+            IStatefullBoard board = new Board();
             var colorizer = new TileColorizer();
             bool running = true;
             Console.BackgroundColor = ConsoleColor.White;
