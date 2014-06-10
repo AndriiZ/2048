@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace _2048
 {
@@ -195,10 +197,95 @@ namespace _2048
         }
     }
 
+    public enum NextStepCommand
+    {
+        Up,
+        Down,
+        Right,
+        Left,
+        Break,
+        Undo,
+        Nop
+    }
+
+    public interface IGameEngine
+    {
+        NextStepCommand GetNextStep(Tile[,] board);
+    }
+
+    public class ConsoleUserEngine : IGameEngine
+    {
+        public NextStepCommand GetNextStep(Tile[,] board)
+        {
+            var key = Console.ReadKey(true);
+            switch (key.Key)
+            {
+                case ConsoleKey.UpArrow:
+                    return NextStepCommand.Up;
+                case ConsoleKey.DownArrow:
+                    return NextStepCommand.Down;
+                case ConsoleKey.LeftArrow:
+                    return NextStepCommand.Left;
+                case ConsoleKey.RightArrow:
+                    return NextStepCommand.Right;
+                case ConsoleKey.Q:
+                    return NextStepCommand.Break;
+                case ConsoleKey.Z:
+                    if ((key.Modifiers & ConsoleModifiers.Control) == ConsoleModifiers.Control)
+                        return NextStepCommand.Break;
+                    break;
+            }
+            return NextStepCommand.Nop;
+        }
+    }
+
+    public class AINaiveEngine : IGameEngine
+    {
+        private Random m_random;
+        public AINaiveEngine()
+        {
+            m_random = new Random();
+        }
+
+
+        public NextStepCommand GetNextStep(Tile[,] board)
+        {
+            
+            var command = NextStepCommand.Nop;
+            switch (m_random.Next() % 4)
+            {
+                case 0 : command = NextStepCommand.Up;
+                    break;
+                case 1: command = NextStepCommand.Down;
+                    break;
+                case 2: command = NextStepCommand.Right;
+                    break;
+                case 3: command = NextStepCommand.Left;
+                    break;
+            }
+            Thread.Sleep(300);
+            return command;
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
+            IGameEngine engine = null;
+            while (engine == null)
+            {
+                Console.Clear();
+                Console.WriteLine("Select mode:");
+                Console.WriteLine("1. User game");
+                Console.WriteLine("2. AI game");
+                var key = Console.ReadKey(true).KeyChar.ToString();
+                if (key == "1")
+                    engine = new ConsoleUserEngine();
+                if (key == "2")
+                    engine = new AINaiveEngine();
+            }
+            Console.Clear();
             var board = new Board();
             var colorizer = new TileColorizer();
             bool running = true;
@@ -207,29 +294,30 @@ namespace _2048
 
             while (running)
             {
-                var key = Console.ReadKey(true);
-                switch (key.Key)
+                NextStepCommand command = engine.GetNextStep(board.To2DArray());
+
+                switch (command)
                 {
-                    case ConsoleKey.UpArrow:
+                    case NextStepCommand.Up : 
                         board.MoveUp();
                         break;
-                    case ConsoleKey.DownArrow:
+                    case NextStepCommand.Down:
                         board.MoveDown();
                         break;
-                    case ConsoleKey.LeftArrow:
-                        board.MoveLeft();
-                        break;
-                    case ConsoleKey.RightArrow:
+                    case NextStepCommand.Right:
                         board.MoveRight();
                         break;
-                    case ConsoleKey.Q:
+                    case NextStepCommand.Left:
+                        board.MoveLeft();
+                        break;
+                    case NextStepCommand.Undo:
+                        board.Undo();
+                        break;
+                    case NextStepCommand.Break:
                         running = false;
                         break;
-                    case ConsoleKey.Z:
-                        if ((key.Modifiers & ConsoleModifiers.Control) == ConsoleModifiers.Control)
-                            board.Undo();
-                        break;
                 }
+
                 if (running)
                     PrintBoard(board, colorizer);
                 if (!board.NextStepAvailable())
