@@ -27,10 +27,9 @@ namespace _2048
 
     class Program
     {
-        static void Main(string[] args)
-        {
+	static IGameEngine GetGameEngine()
+	{
             IGameEngine engine = null;
-	    IGameOptions options = new _2048Options();
             while (engine == null)
             {
                 Console.Clear();
@@ -43,7 +42,13 @@ namespace _2048
                 if (key == "2")
                     engine = new AINaiveEngine();
             }
-            Console.Clear();
+	    return engine;
+	}
+
+        static void Main(string[] args)
+        {
+            IGameEngine engine = GetGameEngine();
+	    IGameOptions options = new _2048Options();
             IStatefullBoard board = new Board();
             var colorizer = new TileColorizer();
             bool running = true;
@@ -90,6 +95,7 @@ namespace _2048
 		    running = false;
 		}
             }
+	Console.ResetColor();
         }
 
         private static void PrintBoard(IBoard board, TileColorizer colorizer)
