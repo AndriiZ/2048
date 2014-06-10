@@ -122,7 +122,8 @@ namespace _2048
                 return false;
             int cellNumber = m_random.Next(emptyCount);
             var tile = emptyTiles.Skip(cellNumber).First();
-            tile.Value = 2;
+            int rndStartTile = m_random.Next(100);
+	    tile.Value = (rndStartTile % 10) != 0 ? 2 : 4;// 90% - 2, 10% - 4
             return true;
         }
 
