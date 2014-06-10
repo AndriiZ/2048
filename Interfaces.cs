@@ -59,5 +59,10 @@ namespace _2048
 	{
 		void Undo();	
 	}
+
+	public interface IGameOptions
+	{	
+		int MaxStepCount { get; }
+	}
 }
 
