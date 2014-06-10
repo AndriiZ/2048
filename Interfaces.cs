@@ -64,5 +64,18 @@ namespace _2048
 	{	
 		int MaxStepCount { get; }
 	}
+
+        public class BoardEventArgs : EventArgs
+        {
+                public IBoard Board { get; set; }
+        }
+
+        public delegate void RepaintRequiredEventHandler(object sender, BoardEventArgs e);
+
+	public interface IGame
+	{
+		event RepaintRequiredEventHandler RepaintRequiredEvent;
+		void Play();
+	}
 }
 

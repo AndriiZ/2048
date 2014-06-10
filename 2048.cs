@@ -45,59 +45,19 @@ namespace _2048
 	    return engine;
 	}
 
-		static void GamePlay(IGameEngine engine, IGameOptions options, IStatefullBoard board, TileColorizer colorizer)
-		{
-			bool running = true;
-            while (running)
-            {
-                NextStepCommand command = engine.GetNextStep(board.To2DArray());
-
-                switch (command)
-                {
-                    case NextStepCommand.Up : 
-                        board.MoveUp();
-                        break;
-                    case NextStepCommand.Down:
-                        board.MoveDown();
-                        break;
-                    case NextStepCommand.Right:
-                        board.MoveRight();
-                        break;
-                    case NextStepCommand.Left:
-                        board.MoveLeft();
-                        break;
-                    case NextStepCommand.Undo:
-                        if (!engine.IsAI())
-							board.Undo();
-                        break;
-                    case NextStepCommand.Break:
-                        running = false;
-                        break;
-                }
-
-                if (running)
-                    PrintBoard(board, colorizer);
-                if (!board.NextStepAvailable())
-                {
-                    running = false;
-                }
-				if (running && engine.IsAI() && board.StepsCount > options.MaxStepCount)
-				{	
-					running = false;
-				}
-            }
-		}
-	
         static void Main(string[] args)
         {
             IGameEngine engine = GetGameEngine();
-			IGameOptions options = new _2048Options();
+	IGameOptions options = new _2048Options();
             IStatefullBoard board = new Board();
             var colorizer = new TileColorizer();
 
             Console.BackgroundColor = ConsoleColor.White;
             PrintBoard(board, colorizer);
-            GamePlay(engine, options, board, colorizer);
+            
+	    IGame game2048 = new Game2048(engine, options, board);
+	    game2048.RepaintRequiredEvent += (o, e) => PrintBoard(e.Board, colorizer);
+	    game2048.Play();
             Console.WriteLine("Game over!");
 			if (engine.IsAI() && board.StepsCount > options.MaxStepCount)
 			{	
