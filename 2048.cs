@@ -24,7 +24,7 @@ namespace _2048
             {8192, ConsoleColor.Yellow},
             {16384, ConsoleColor.DarkYellow}
         };
-        
+
         public ConsoleColor GetColorByValue(int value)
         {
             ConsoleColor color;
@@ -36,7 +36,7 @@ namespace _2048
 
     public class Tile
     {
-        public int Value {  get;set; }
+        public int Value { get; set; }
         public SByte X { get; set; }
         public SByte Y { get; set; }
     }
@@ -45,9 +45,10 @@ namespace _2048
     {
         private readonly SByte m_size;
         private List<Tile> m_board;
-        private Random m_random = new Random();
-        private Stack<List<Tile>> m_undoboards = new Stack<List<Tile>>();
+        private readonly Random m_random = new Random();
+        private readonly Stack<List<Tile>> m_undoboards = new Stack<List<Tile>>();
 
+        public int Score { get; private set; }
         public int StepsCount { get; private set; }
 
         public Board(SByte size = 4)
@@ -142,6 +143,8 @@ namespace _2048
             {
                 if (col1[y1].Value == col1[y1 + 1].Value || col1[y1].Value == 0)
                 {
+                    if (col1[y1].Value == col1[y1 + 1].Value)
+                        Score += col1[y1].Value;
                     col1[y1].Value = col1[y1].Value + col1[y1 + 1].Value;
                     col1[y1 + 1].Value = 0;
                 }
@@ -154,6 +157,8 @@ namespace _2048
             {
                 if (col1[y1].Value == col1[y1 - 1].Value || col1[y1].Value == 0)
                 {
+                    if (col1[y1].Value == col1[y1 - 1].Value)
+                        Score += col1[y1].Value;
                     col1[y1].Value = col1[y1].Value + col1[y1 - 1].Value;
                     col1[y1 - 1].Value = 0;
                 }
@@ -186,7 +191,7 @@ namespace _2048
             if (StepsCount < 1)
                 return;
             m_board = new List<Tile>(m_undoboards.Pop().ToArray());
-            StepsCount = StepsCount -1;
+            StepsCount = StepsCount - 1;
         }
     }
 
@@ -238,7 +243,7 @@ namespace _2048
         private static void PrintBoard(Board board, TileColorizer colorizer)
         {
             Console.Clear();
-            Console.WriteLine("Used {0,4} steps", board.StepsCount);
+            Console.WriteLine("Used {0,4} steps, score {1,5}", board.StepsCount, board.Score);
             var arr = board.To2DArray();
             int rowLength = arr.GetLength(0);
             int colLength = arr.GetLength(1);
@@ -248,7 +253,7 @@ namespace _2048
                 for (int j = 0; j < colLength; j++)
                 {
                     Console.ForegroundColor = colorizer.GetColorByValue(arr[i, j].Value);
-                    Console.Write(string.Format("{0,4} ", arr[i, j].Value));
+                    Console.Write("{0,4} ", arr[i, j].Value);
                 }
                 Console.Write(Environment.NewLine + Environment.NewLine);
             }
