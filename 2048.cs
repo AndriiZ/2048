@@ -226,11 +226,17 @@ namespace _2048
 
     public interface IGameEngine
     {
-        NextStepCommand GetNextStep(Tile[,] board);
+        bool IsAI();
+	NextStepCommand GetNextStep(Tile[,] board);
     }
 
-    public class ConsoleUserEngine : IGameEngine
+    public sealed class ConsoleUserEngine : IGameEngine
     {
+	public bool IsAI()
+	{
+	    return false;
+	}
+
         public NextStepCommand GetNextStep(Tile[,] board)
         {
             var key = Console.ReadKey(true);
@@ -263,6 +269,10 @@ namespace _2048
             m_random = new Random();
         }
 
+	public bool IsAI()
+	{
+	   return true;
+	}
 
         public NextStepCommand GetNextStep(Tile[,] board)
         {
@@ -327,7 +337,8 @@ namespace _2048
                         board.MoveLeft();
                         break;
                     case NextStepCommand.Undo:
-                        board.Undo();
+                        if (!engine.IsAI())
+				board.Undo();
                         break;
                     case NextStepCommand.Break:
                         running = false;
@@ -341,6 +352,11 @@ namespace _2048
                     Console.WriteLine("Game over!");
                     running = false;
                 }
+		if (running && engine.IsAI() && board.StepsCount > 1000 )
+		{	
+		    Console.WriteLine("Halt! 1000 step limit reached!");
+		    running = false;
+		}
             }
         }
 
