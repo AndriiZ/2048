@@ -38,16 +38,15 @@ namespace _2048
 	
 	public interface ITile
 	{
-		int Value { get; set; }
-		SByte X { get; set; }
-		SByte Y { get; set; }
+		int Value { get; }
+		SByte X { get; }
+		SByte Y { get; }
 	}
-	
+
 	public interface IBoard
 	{
         	int Score { get; }
 	        int StepsCount { get; }
-		List<ITile> DeepCopy();
 		bool NextStepAvailable();
 		ITile[,] To2DArray();
 	        void MoveUp();

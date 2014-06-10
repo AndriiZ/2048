@@ -25,9 +25,9 @@ namespace _2048
     public class Board : IStatefullBoard
     {
         private readonly SByte m_size;
-        private List<ITile> m_board;
+        private List<Tile> m_board;
         private readonly Random m_random = new Random();
-        private readonly Stack<List<ITile>> m_undoboards = new Stack<List<ITile>>();
+        private readonly Stack<List<Tile>> m_undoboards = new Stack<List<Tile>>();
 
         public int Score { get; private set; }
         public int StepsCount { get; private set; }
@@ -35,7 +35,7 @@ namespace _2048
         public Board(SByte size = 4)
         {
             m_size = size;
-            m_board = new List<ITile>(m_size * m_size);
+            m_board = new List<Tile>(m_size * m_size);
             sbyte y = 0;
             for (SByte x = 0; x < m_size * m_size; x++)
             {
@@ -47,19 +47,19 @@ namespace _2048
             NextFill();
         }
 
-        public List<ITile> DeepCopy()
+        List<Tile> DeepCopy()
         {
-            var board = new List<ITile>(m_size * m_size);
+            var board = new List<Tile>(m_size * m_size);
             foreach (var tile in m_board)
                 board.Add(new Tile() { X = tile.X, Y = tile.Y, Value = tile.Value });
             return board;
         }
 
-        bool HasEqualInVector(Func<ITile, int> predicate)
+        bool HasEqualInVector(Func<Tile, int> predicate)
         {
             for (int c = 0; c < m_size; c++)
             {
-                var col1 = new List<ITile>(m_board.Where(x => predicate(x) == c));
+                var col1 = new List<Tile>(m_board.Where(x => predicate(x) == c));
                 for (int i = 0; i < m_size - 1; i++)
                     if (col1[i].Value == col1[i + 1].Value)
                         return true;
@@ -72,7 +72,7 @@ namespace _2048
             return GetEmptyTiles().Any() || HasEqualInVector(x => x.Y) || HasEqualInVector(x => x.X);
         }
 
-        IEnumerable<ITile> GetEmptyTiles()
+        IEnumerable<Tile> GetEmptyTiles()
         {
             return m_board.Where(x => x.Value == 0);
         }
@@ -100,13 +100,13 @@ namespace _2048
             return output;
         }
 
-        private void Move(Func<ITile, int> predicate, bool up)
+        private void Move(Func<Tile, int> predicate, bool up)
         {
             m_undoboards.Push(DeepCopy());
             StepsCount = StepsCount + 1;
             for (int c = 0; c < m_size; c++)
             {
-                var col1 = new List<ITile>(m_board.Where(x => predicate(x) == c));
+                var col1 = new List<Tile>(m_board.Where(x => predicate(x) == c));
 
                 for (int i = 0; i < m_size - 1; i++)
                     if (up)
@@ -118,7 +118,7 @@ namespace _2048
         }
 
 
-        private void MoveP(List<ITile> col1)
+        private void MoveP(List<Tile> col1)
         {
             for (sbyte y1 = 0; y1 < m_size - 1; y1++)
             {
@@ -132,7 +132,7 @@ namespace _2048
             }
         }
 
-        private void MoveN(List<ITile> col1)
+        private void MoveN(List<Tile> col1)
         {
             for (sbyte y1 = (sbyte)(m_size - 1); y1 > 0; y1--)
             {
@@ -171,7 +171,7 @@ namespace _2048
         {
             if (StepsCount < 1)
                 return;
-            m_board = new List<ITile>(m_undoboards.Pop().ToArray());
+            m_board = new List<Tile>(m_undoboards.Pop().ToArray());
             StepsCount = StepsCount - 1;
         }
     }
