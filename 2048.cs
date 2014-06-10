@@ -27,9 +27,10 @@ namespace _2048
         
         public ConsoleColor GetColorByValue(int value)
         {
-            ConsoleColor color = ConsoleColor.Black;
-            colors.TryGetValue(value, out color);
-            return color;
+            ConsoleColor color;
+            if (colors.TryGetValue(value, out color))
+                return color;
+            return ConsoleColor.Black;
         }
     }
 
