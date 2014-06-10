@@ -45,16 +45,9 @@ namespace _2048
 	    return engine;
 	}
 
-        static void Main(string[] args)
-        {
-            IGameEngine engine = GetGameEngine();
-	    IGameOptions options = new _2048Options();
-            IStatefullBoard board = new Board();
-            var colorizer = new TileColorizer();
-            bool running = true;
-            Console.BackgroundColor = ConsoleColor.White;
-            PrintBoard(board, colorizer);
-
+		static void GamePlay(IGameEngine engine, IGameOptions options, IStatefullBoard board, TileColorizer colorizer)
+		{
+			bool running = true;
             while (running)
             {
                 NextStepCommand command = engine.GetNextStep(board.To2DArray());
@@ -75,7 +68,7 @@ namespace _2048
                         break;
                     case NextStepCommand.Undo:
                         if (!engine.IsAI())
-				board.Undo();
+							board.Undo();
                         break;
                     case NextStepCommand.Break:
                         running = false;
@@ -86,16 +79,32 @@ namespace _2048
                     PrintBoard(board, colorizer);
                 if (!board.NextStepAvailable())
                 {
-                    Console.WriteLine("Game over!");
                     running = false;
                 }
-		if (running && engine.IsAI() && board.StepsCount > options.MaxStepCount)
-		{	
-		    Console.WriteLine("Halt! {0} step limit reached!", options.MaxStepCount);
-		    running = false;
-		}
+				if (running && engine.IsAI() && board.StepsCount > options.MaxStepCount)
+				{	
+					running = false;
+				}
             }
-	Console.ResetColor();
+		}
+	
+        static void Main(string[] args)
+        {
+            IGameEngine engine = GetGameEngine();
+			IGameOptions options = new _2048Options();
+            IStatefullBoard board = new Board();
+            var colorizer = new TileColorizer();
+
+            Console.BackgroundColor = ConsoleColor.White;
+            PrintBoard(board, colorizer);
+            GamePlay(engine, options, board, colorizer);
+            Console.WriteLine("Game over!");
+			if (engine.IsAI() && board.StepsCount > options.MaxStepCount)
+			{	
+				Console.WriteLine("Halt! {0} step limit reached!", options.MaxStepCount);
+			}
+
+			Console.ResetColor();
         }
 
         private static void PrintBoard(IBoard board, TileColorizer colorizer)
@@ -120,3 +129,4 @@ namespace _2048
         }
     }
 }
+
