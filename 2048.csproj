@@ -46,7 +46,7 @@
     <Compile Include="Board.cs" />
     <Compile Include="ConsoleUserEngine.cs" />
     <Compile Include="Game2048.cs" />
-    <Compile Include="Intrastructure.cs" />
+    <Compile Include="Infrastructure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="TileColorizer.cs" />
