@@ -30,7 +30,6 @@ namespace _2048
     {
         #region Fields
 
-        private readonly Random m_random = new Random();
         private readonly SByte m_size;
         private readonly Stack<List<Tile>> m_undoboards = new Stack<List<Tile>>();
 
@@ -40,7 +39,7 @@ namespace _2048
 
         #region Constructors
 
-        public Board(SByte size = 4)
+        public Board(SByte size = 4, INextValueGenerator<sbyte> generator = null)
         {
             m_size = size;
             m_board = new List<Tile>(m_size * m_size);
@@ -52,12 +51,15 @@ namespace _2048
 
                 m_board.Add(new Tile { X = y, Y = (sbyte)(x - (sbyte)(y * m_size)) });
             }
+	    NextValueGenerator = generator ?? new StandardNextValueGenerator();
             NextFill();
         }
 
         #endregion Constructors
 
         #region Properties
+
+	public INextValueGenerator<sbyte> NextValueGenerator { get; private set;}
 
         public int Score
         {
@@ -190,12 +192,12 @@ namespace _2048
         bool NextFill()
         {
             var emptyTiles = GetEmptyTiles();
-            int emptyCount = emptyTiles.Count();
+            sbyte emptyCount = (sbyte)(emptyTiles.Count());
             if (emptyCount == 0)
                 return false;
-            int cellNumber = m_random.Next(emptyCount);
+            int cellNumber =  NextValueGenerator.Next(emptyCount);
             var tile = emptyTiles.Skip(cellNumber).First();
-            tile.Value = (m_random.Next(100) % 10) != 0 ? 2 : 4;// 90% - 2, 10% - 4
+            tile.Value = NextValueGenerator.Next();
             return true;
         }
 

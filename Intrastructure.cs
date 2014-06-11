@@ -49,6 +49,8 @@ namespace _2048
     {
         #region Properties
 
+	INextValueGenerator<sbyte> NextValueGenerator { get; }
+
         int Score
         {
             get;
@@ -158,4 +160,10 @@ namespace _2048
 
         #endregion Properties
     }
+
+   public interface INextValueGenerator<T>
+   {
+	T Next();
+	T Next(T limit);
+   }
 }
