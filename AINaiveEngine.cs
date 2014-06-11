@@ -1,6 +1,8 @@
-/* 
+﻿#region Header
+
+/*
     2048 Game implementation by Andrii Zhuk
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -14,23 +16,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using System;
-using System.Threading;
+
+#endregion Header
 
 namespace _2048
 {
+    using System;
+    using System.Threading;
+
     public class AINaiveEngine : IGameEngine
     {
+        #region Fields
+
         private Random m_random;
+
+        #endregion Fields
+
+        #region Constructors
+
         public AINaiveEngine()
         {
             m_random = new Random();
         }
 
-		public bool IsAI()
-		{
-			return true;
-		}
+        #endregion Constructors
+
+        #region Methods
 
         public NextStepCommand GetNextStep(ITile[,] board)
         {
@@ -49,6 +60,12 @@ namespace _2048
             Thread.Sleep(300);
             return command;
         }
+
+        public bool IsAI()
+        {
+            return true;
+        }
+
+        #endregion Methods
     }
 }
-

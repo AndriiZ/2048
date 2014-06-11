@@ -1,6 +1,8 @@
-/* 
+﻿#region Header
+
+/*
     2048 Game implementation by Andrii Zhuk
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -14,15 +16,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using System;
+
+#endregion Header
 
 namespace _2048
 {
+    using System;
+
     public class Tile : ITile
     {
-        public int Value { get; set; }
-        public SByte X { get; set; }
-        public SByte Y { get; set; }
+        #region Properties
+
+        public int Value
+        {
+            get; set;
+        }
+
+        public SByte X
+        {
+            get; set;
+        }
+
+        public SByte Y
+        {
+            get; set;
+        }
+
+        #endregion Properties
     }
 }
-

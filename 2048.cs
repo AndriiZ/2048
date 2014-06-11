@@ -1,6 +1,8 @@
-/* 
+﻿#region Header
+
+/*
     2048 Game implementation by Andrii Zhuk
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -14,21 +16,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using System;
-using System.Collections;
-using System.Text;
+
+#endregion Header
 
 namespace _2048
 {
-    class _2048Options : IGameOptions
-    {
-	public int MaxStepCount { get { return 1000; } }	    
-    }
+    using System;
+    using System.Collections;
+    using System.Text;
 
     class Program
     {
-	static IGameEngine GetGameEngine()
-	{
+        #region Methods
+
+        static IGameEngine GetGameEngine()
+        {
             IGameEngine engine = null;
             while (engine == null)
             {
@@ -42,29 +44,29 @@ namespace _2048
                 if (key == "2")
                     engine = new AINaiveEngine();
             }
-	    return engine;
-	}
+            return engine;
+        }
 
         static void Main(string[] args)
         {
             IGameEngine engine = GetGameEngine();
-	IGameOptions options = new _2048Options();
+            IGameOptions options = new _2048Options();
             IStatefullBoard board = new Board();
             var colorizer = new TileColorizer();
 
             Console.BackgroundColor = ConsoleColor.White;
             PrintBoard(board, colorizer);
-            
-	    IGame game2048 = new Game2048(engine, options, board);
-	    game2048.RepaintRequiredEvent += (o, e) => PrintBoard(e.Board, colorizer);
-	    game2048.Play();
-            Console.WriteLine("Game over!");
-			if (engine.IsAI() && board.StepsCount > options.MaxStepCount)
-			{	
-				Console.WriteLine("Halt! {0} step limit reached!", options.MaxStepCount);
-			}
 
-			Console.ResetColor();
+            IGame game2048 = new Game2048(engine, options, board);
+            game2048.RepaintRequiredEvent += (o, e) => PrintBoard(e.Board, colorizer);
+            game2048.Play();
+            Console.WriteLine("Game over!");
+            if (engine.IsAI() && board.StepsCount > options.MaxStepCount)
+            {
+                Console.WriteLine("Halt! {0} step limit reached!", options.MaxStepCount);
+            }
+
+            Console.ResetColor();
         }
 
         private static void PrintBoard(IBoard board, TileColorizer colorizer)
@@ -87,6 +89,19 @@ namespace _2048
             Console.ForegroundColor = ConsoleColor.Black;
             Console.WriteLine("Press q to exit, use arrow keys for game, ctrl+z to undo");
         }
+
+        #endregion Methods
+    }
+
+    class _2048Options : IGameOptions
+    {
+        #region Properties
+
+        public int MaxStepCount
+        {
+            get { return 1000; }
+        }
+
+        #endregion Properties
     }
 }
-

@@ -1,6 +1,8 @@
-/* 
+﻿#region Header
+
+/*
     2048 Game implementation by Andrii Zhuk
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -14,13 +16,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using System;
-using System.Collections.Generic;
+
+#endregion Header
 
 namespace _2048
 {
+    using System;
+    using System.Collections.Generic;
+
     public class TileColorizer
     {
+        #region Fields
+
         private readonly Dictionary<int, ConsoleColor> colors = new Dictionary<int, ConsoleColor>
         {
             {2, ConsoleColor.Black},
@@ -39,6 +46,10 @@ namespace _2048
             {16384, ConsoleColor.DarkYellow}
         };
 
+        #endregion Fields
+
+        #region Methods
+
         public ConsoleColor GetColorByValue(int value)
         {
             ConsoleColor color;
@@ -46,6 +57,7 @@ namespace _2048
                 return color;
             return ConsoleColor.Black;
         }
+
+        #endregion Methods
     }
 }
-

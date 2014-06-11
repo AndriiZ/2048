@@ -1,6 +1,8 @@
-/* 
+﻿#region Header
+
+/*
     2048 Game implementation by Andrii Zhuk
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -14,23 +16,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
+#endregion Header
 
 namespace _2048
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+
     public class Board : IStatefullBoard
     {
-        private readonly SByte m_size;
-        private List<Tile> m_board;
+        #region Fields
+
         private readonly Random m_random = new Random();
+        private readonly SByte m_size;
         private readonly Stack<List<Tile>> m_undoboards = new Stack<List<Tile>>();
 
-        public int Score { get; private set; }
-        public int StepsCount { get; private set; }
+        private List<Tile> m_board;
+
+        #endregion Fields
+
+        #region Constructors
 
         public Board(SByte size = 4)
         {
@@ -47,12 +55,79 @@ namespace _2048
             NextFill();
         }
 
+        #endregion Constructors
+
+        #region Properties
+
+        public int Score
+        {
+            get; private set;
+        }
+
+        public int StepsCount
+        {
+            get; private set;
+        }
+
+        #endregion Properties
+
+        #region Methods
+
+        public void MoveDown()
+        {
+            Move(x => x.Y, false);
+        }
+
+        public void MoveLeft()
+        {
+            Move(x => x.X, true);
+        }
+
+        public void MoveRight()
+        {
+            Move(x => x.X, false);
+        }
+
+        public void MoveUp()
+        {
+            Move(x => x.Y, true);
+        }
+
+        public bool NextStepAvailable()
+        {
+            return GetEmptyTiles().Any() || HasEqualInVector(x => x.Y) || HasEqualInVector(x => x.X);
+        }
+
+        public ITile[,] To2DArray()
+        {
+            var output = new ITile[m_size, m_size];
+
+            foreach (var tile in m_board)
+            {
+                output[tile.X, tile.Y] = tile;
+            }
+            return output;
+        }
+
+        public void Undo()
+        {
+            if (StepsCount < 1)
+                return;
+            m_board = new List<Tile>(m_undoboards.Pop().ToArray());
+            StepsCount = StepsCount - 1;
+        }
+
         List<Tile> DeepCopy()
         {
             var board = new List<Tile>(m_size * m_size);
             foreach (var tile in m_board)
                 board.Add(new Tile() { X = tile.X, Y = tile.Y, Value = tile.Value });
             return board;
+        }
+
+        IEnumerable<Tile> GetEmptyTiles()
+        {
+            return m_board.Where(x => x.Value == 0);
         }
 
         bool HasEqualInVector(Func<Tile, int> predicate)
@@ -65,39 +140,6 @@ namespace _2048
                         return true;
             }
             return false;
-        }
-
-        public bool NextStepAvailable()
-        {
-            return GetEmptyTiles().Any() || HasEqualInVector(x => x.Y) || HasEqualInVector(x => x.X);
-        }
-
-        IEnumerable<Tile> GetEmptyTiles()
-        {
-            return m_board.Where(x => x.Value == 0);
-        }
-
-        bool NextFill()
-        {
-            var emptyTiles = GetEmptyTiles();
-            int emptyCount = emptyTiles.Count();
-            if (emptyCount == 0)
-                return false;
-            int cellNumber = m_random.Next(emptyCount);
-            var tile = emptyTiles.Skip(cellNumber).First();
-	    tile.Value = (m_random.Next(100) % 10) != 0 ? 2 : 4;// 90% - 2, 10% - 4
-            return true;
-        }
-
-        public ITile[,] To2DArray()
-        {
-            var output = new ITile[m_size, m_size];
-
-            foreach (var tile in m_board)
-            {
-                output[tile.X, tile.Y] = tile;
-            }
-            return output;
         }
 
         private void Move(Func<Tile, int> predicate, bool up)
@@ -117,6 +159,19 @@ namespace _2048
             NextFill();
         }
 
+        private void MoveN(List<Tile> col1)
+        {
+            for (sbyte y1 = (sbyte)(m_size - 1); y1 > 0; y1--)
+            {
+                if (col1[y1].Value == col1[y1 - 1].Value || col1[y1].Value == 0)
+                {
+                    if (col1[y1].Value == col1[y1 - 1].Value)
+                        Score += col1[y1].Value;
+                    col1[y1].Value = col1[y1].Value + col1[y1 - 1].Value;
+                    col1[y1 - 1].Value = 0;
+                }
+            }
+        }
 
         private void MoveP(List<Tile> col1)
         {
@@ -132,48 +187,18 @@ namespace _2048
             }
         }
 
-        private void MoveN(List<Tile> col1)
+        bool NextFill()
         {
-            for (sbyte y1 = (sbyte)(m_size - 1); y1 > 0; y1--)
-            {
-                if (col1[y1].Value == col1[y1 - 1].Value || col1[y1].Value == 0)
-                {
-                    if (col1[y1].Value == col1[y1 - 1].Value)
-                        Score += col1[y1].Value;
-                    col1[y1].Value = col1[y1].Value + col1[y1 - 1].Value;
-                    col1[y1 - 1].Value = 0;
-                }
-            }
+            var emptyTiles = GetEmptyTiles();
+            int emptyCount = emptyTiles.Count();
+            if (emptyCount == 0)
+                return false;
+            int cellNumber = m_random.Next(emptyCount);
+            var tile = emptyTiles.Skip(cellNumber).First();
+            tile.Value = (m_random.Next(100) % 10) != 0 ? 2 : 4;// 90% - 2, 10% - 4
+            return true;
         }
 
-        public void MoveUp()
-        {
-            Move(x => x.Y, true);
-        }
-
-        public void MoveDown()
-        {
-            Move(x => x.Y, false);
-        }
-
-        public void MoveLeft()
-        {
-            Move(x => x.X, true);
-        }
-
-        public void MoveRight()
-        {
-            Move(x => x.X, false);
-        }
-
-
-        public void Undo()
-        {
-            if (StepsCount < 1)
-                return;
-            m_board = new List<Tile>(m_undoboards.Pop().ToArray());
-            StepsCount = StepsCount - 1;
-        }
+        #endregion Methods
     }
 }
-

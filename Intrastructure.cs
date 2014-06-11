@@ -1,6 +1,8 @@
-/* 
+﻿#region Header
+
+/*
     2048 Game implementation by Andrii Zhuk
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -14,68 +16,146 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using System;
-using System.Collections.Generic;
+
+#endregion Header
 
 namespace _2048
 {
-	public enum NextStepCommand
-	{
-		Up,
-		Down,
-		Right,
-		Left,
-		Break,
-		Undo,
-		Nop
-	}
+    using System;
+    using System.Collections.Generic;
 
-	public interface IGameEngine
-	{
-		bool IsAI();
-		NextStepCommand GetNextStep(ITile[,] board);
-	}
-	
-	public interface ITile
-	{
-		int Value { get; }
-		SByte X { get; }
-		SByte Y { get; }
-	}
+    #region Enumerations
 
-	public interface IBoard
-	{
-        	int Score { get; }
-	        int StepsCount { get; }
-		bool NextStepAvailable();
-		ITile[,] To2DArray();
-	        void MoveUp();
-        	void MoveDown();
-	        void MoveLeft();
-        	void MoveRight();
-	}
-	
-	public interface IStatefullBoard : IBoard
-	{
-		void Undo();	
-	}
+    public enum NextStepCommand
+    {
+        Up,
+        Down,
+        Right,
+        Left,
+        Break,
+        Undo,
+        Nop
+    }
 
-	public interface IGameOptions
-	{	
-		int MaxStepCount { get; }
-	}
+    #endregion Enumerations
 
-        public class BoardEventArgs : EventArgs
+    #region Delegates
+
+    public delegate void RepaintRequiredEventHandler(object sender, BoardEventArgs e);
+
+    #endregion Delegates
+
+    public interface IBoard
+    {
+        #region Properties
+
+        int Score
         {
-                public IBoard Board { get; set; }
+            get;
         }
 
-        public delegate void RepaintRequiredEventHandler(object sender, BoardEventArgs e);
+        int StepsCount
+        {
+            get;
+        }
 
-	public interface IGame
-	{
-		event RepaintRequiredEventHandler RepaintRequiredEvent;
-		void Play();
-	}
+        #endregion Properties
+
+        #region Methods
+
+        void MoveDown();
+
+        void MoveLeft();
+
+        void MoveRight();
+
+        void MoveUp();
+
+        bool NextStepAvailable();
+
+        ITile[,] To2DArray();
+
+        #endregion Methods
+    }
+
+    public interface IGame
+    {
+        #region Events
+
+        event RepaintRequiredEventHandler RepaintRequiredEvent;
+
+        #endregion Events
+
+        #region Methods
+
+        void Play();
+
+        #endregion Methods
+    }
+
+    public interface IGameEngine
+    {
+        #region Methods
+
+        NextStepCommand GetNextStep(ITile[,] board);
+
+        bool IsAI();
+
+        #endregion Methods
+    }
+
+    public interface IGameOptions
+    {
+        #region Properties
+
+        int MaxStepCount
+        {
+            get;
+        }
+
+        #endregion Properties
+    }
+
+    public interface IStatefullBoard : IBoard
+    {
+        #region Methods
+
+        void Undo();
+
+        #endregion Methods
+    }
+
+    public interface ITile
+    {
+        #region Properties
+
+        int Value
+        {
+            get;
+        }
+
+        SByte X
+        {
+            get;
+        }
+
+        SByte Y
+        {
+            get;
+        }
+
+        #endregion Properties
+    }
+
+    public class BoardEventArgs : EventArgs
+    {
+        #region Properties
+
+        public IBoard Board
+        {
+            get; set;
+        }
+
+        #endregion Properties
+    }
 }
-

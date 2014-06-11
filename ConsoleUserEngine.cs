@@ -1,6 +1,8 @@
-/* 
+﻿#region Header
+
+/*
     2048 Game implementation by Andrii Zhuk
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -14,16 +16,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using System;
+
+#endregion Header
 
 namespace _2048
 {
+    using System;
+
     public sealed class ConsoleUserEngine : IGameEngine
     {
-		public bool IsAI()
-		{
-			return false;
-		}
+        #region Methods
 
         public NextStepCommand GetNextStep(ITile[,] board)
         {
@@ -47,6 +49,12 @@ namespace _2048
             }
             return NextStepCommand.Nop;
         }
+
+        public bool IsAI()
+        {
+            return false;
+        }
+
+        #endregion Methods
     }
 }
-
