@@ -104,7 +104,7 @@ namespace _2048
 
             foreach (var tile in m_board)
             {
-                output[tile.X, tile.Y] = tile;
+                output[tile.X, tile.Y] = new Tile { X = tile.X, Y = tile.Y, Value = tile.Value };
             }
             return output;
         }
@@ -121,7 +121,7 @@ namespace _2048
         {
             var board = new List<Tile>(m_size * m_size);
             foreach (var tile in m_board)
-                board.Add(new Tile() { X = tile.X, Y = tile.Y, Value = tile.Value });
+                board.Add(new Tile { X = tile.X, Y = tile.Y, Value = tile.Value });
             return board;
         }
 
