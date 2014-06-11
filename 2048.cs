@@ -24,6 +24,7 @@ namespace _2048
     using System;
     using System.Collections;
     using System.Text;
+    using _2048Lib;
 
     class Program
     {

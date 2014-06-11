@@ -19,7 +19,7 @@
 
 #endregion Header
 
-namespace _2048
+namespace _2048Lib
 {
     using System;
 

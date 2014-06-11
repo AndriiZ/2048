@@ -22,6 +22,7 @@
 namespace _2048
 {
     using System;
+    using _2048Lib;
 
     public sealed class ConsoleUserEngine : IGameEngine
     {

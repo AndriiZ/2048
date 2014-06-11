@@ -1,24 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?> <Project ToolsVersion="12.0" 
-DefaultTargets="Build" 
-xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import 
-Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" 
-Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" 
-/>
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' 
-">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4D92FFF4-0AA3-4D18-99B4-FD98F007C514}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{776A1B67-45D6-433C-B7B7-E5A62905EC8F}</ProjectGuid>
+    <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_2048</RootNamespace>
-    <AssemblyName>2048</AssemblyName>
+    <RootNamespace>_2048Test</RootNamespace>
+    <AssemblyName>2048Test</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 
-'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -28,8 +22,7 @@ Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Com
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 
-'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -46,18 +39,25 @@ Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Com
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="2048Lib">
-      <HintPath>2048Lib.dll</HintPath>
+    <Reference Include="nunit.framework" />
+    <Reference Include="Rhino.Mocks">
+      <HintPath>./ThirdParty/Rhino.Mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core">
+      <HintPath>./ThirdParty/Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.DynamicProxy2">
+      <HintPath>./ThirdParty/Castle.DynamicProxy2.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="2048.cs" />
-    <Compile Include="ConsoleUserEngine.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TileColorizer.cs" />
+    <Compile Include="BoardTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <ProjectReference Include="..\2048Lib.csproj">
+      <Project>{8da36a41-735c-4df9-8405-db830e4c5e11}</Project>
+      <Name>2048Lib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the 
@@ -68,4 +68,5 @@ Microsoft.Common.targets.
   </Target>
   <Target Name="AfterBuild">
   </Target>
-  --> </Project>
+  -->
+</Project>

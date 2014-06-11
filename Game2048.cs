@@ -19,11 +19,11 @@
 
 #endregion Header
 
-namespace _2048
+namespace _2048Lib
 {
     using System;
 
-    class Game2048 : IGame
+    public class Game2048 : IGame
     {
         #region Fields
 

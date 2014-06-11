@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="/home/pi/src/csharp/2048/test/bin/Debug/2048Test.dll" total="1" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2014-06-11" time="18:04:22">
+  <environment nunit-version="2.6.0.0" clr-version="4.0.30319.17020" os-version="Unix 3.12.19.0" platform="Unix" cwd="/home/pi/src/csharp/2048/test/bin/Debug" machine-name="raspberrypi" user="pi" user-domain="raspberrypi" />
+  <culture-info current-culture="en-US" current-uiculture="en-US" />
+  <test-suite type="Assembly" name="/home/pi/src/csharp/2048/test/bin/Debug/2048Test.dll" executed="True" result="Success" success="True" time="0.316" asserts="0">
+    <results>
+      <test-suite type="Namespace" name="_2048Test" executed="True" result="Success" success="True" time="0.228" asserts="0">
+        <results>
+          <test-suite type="TestFixture" name="BoardTest" executed="True" result="Success" success="True" time="0.210" asserts="0">
+            <results>
+              <test-case name="_2048Test.BoardTest.Test" executed="True" result="Success" success="True" time="0.115" asserts="0" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
