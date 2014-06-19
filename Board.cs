@@ -195,9 +195,9 @@ namespace _2048Lib
             sbyte emptyCount = (sbyte)(emptyTiles.Count());
             if (emptyCount == 0)
                 return false;
-            int cellNumber =  NextValueGenerator.Next(emptyCount);
+            int cellNumber =  NextValueGenerator.NextPosition(emptyCount);
             var tile = emptyTiles.Skip(cellNumber).First();
-            tile.Value = NextValueGenerator.Next();
+            tile.Value = NextValueGenerator.NextValue();
             return true;
         }
 

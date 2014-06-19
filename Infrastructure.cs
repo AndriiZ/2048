@@ -163,7 +163,7 @@ namespace _2048Lib
 
    public interface INextValueGenerator<T>
    {
-	    T Next();
-	    T Next(T limit);
+	    T NextValue();
+	    T NextPosition(T limit);
    }
 }

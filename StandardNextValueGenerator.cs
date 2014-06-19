@@ -27,12 +27,12 @@ namespace _2048Lib
     {
 	private readonly Random m_random = new Random();
 
-	public sbyte Next()
+	public sbyte NextValue()
 	{
 		return	(m_random.Next(100) % 10) != 0 ? (sbyte)2 : (sbyte)4;// 90% - 2, 10% - 4
 	}
 
-	public sbyte Next(sbyte limit)
+	public sbyte NextPosition(sbyte limit)
 	{
 		return (sbyte)(m_random.Next(limit)); 
 	}
