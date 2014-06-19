@@ -71,6 +71,11 @@ namespace _2048Lib
             get; private set;
         }
 
+        public SByte Size
+        {
+            get { return m_size; }
+        }
+
         #endregion Properties
 
         #region Methods

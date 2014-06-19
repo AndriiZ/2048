@@ -47,10 +47,6 @@ namespace _2048Lib
 
     public interface IBoard
     {
-        #region Properties
-
-	INextValueGenerator<sbyte> NextValueGenerator { get; }
-
         int Score
         {
             get;
@@ -60,6 +56,20 @@ namespace _2048Lib
         {
             get;
         }
+
+        SByte Size
+        {
+            get;
+        }
+
+        ITile[,] To2DArray();
+    }
+
+    public interface IGameBoard : IBoard
+    {
+        #region Properties
+
+	    INextValueGenerator<sbyte> NextValueGenerator { get; }
 
         #endregion Properties
 
@@ -74,8 +84,6 @@ namespace _2048Lib
         void MoveUp();
 
         bool NextStepAvailable();
-
-        ITile[,] To2DArray();
 
         #endregion Methods
     }
@@ -118,7 +126,7 @@ namespace _2048Lib
         #endregion Properties
     }
 
-    public interface IStatefullBoard : IBoard
+    public interface IStatefullBoard : IGameBoard
     {
         #region Methods
 
